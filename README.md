@@ -1,6 +1,6 @@
-# 🧭 GeoBorehole3D-ArcGIS-Toolbox
+# 🧭 GeoBorehole3D — ArcGIS Python Toolbox
 
-A Python-based **ArcGIS Toolbox** for visualizing and interpolating subsurface geology using borehole data with 3D kriging.
+A **Python-based ArcGIS Toolbox** for visualizing and interpolating subsurface geology using borehole data through advanced **3D Kriging** workflows.
 
 ---
 
@@ -8,117 +8,118 @@ A Python-based **ArcGIS Toolbox** for visualizing and interpolating subsurface g
 **Email:** [Michael.Attia@wsp.com](mailto:Michael.Attia@wsp.com)  
 **Created:** October 30, 2023  
 **Version:** 1.0  
+**Organization:** WSP USA / Louisiana State University  
 
 ---
 
 ## 📖 Overview
 
-**GeoBorehole3D** is a custom **ArcGIS Python Toolbox (.pyt)** designed to automate the visualization and creation of 3D geological models from borehole data.
+**GeoBorehole3D** is a custom **ArcGIS Pro Python Toolbox (.pyt)** that automates the process of building 3D subsurface models from borehole datasets.  
 
-This tool enables users to:
-- Import borehole CSV data and create 3D point features.
-- Convert borehole points into 3D features using elevation attributes.
-- Interpolate subsurface layers using **Empirical Bayesian Kriging 3D (EBK3D)**.
+The toolbox streamlines:
+- Importing borehole CSV data and converting to 3D feature points  
+- Building elevation-based 3D feature classes  
+- Interpolating subsurface layers using **Empirical Bayesian Kriging 3D (EBK3D)**  
 
-The workflow provides a robust approach for visualizing stratigraphy, lithology, or other vertical subsurface attributes directly in **ArcGIS Pro**.
+This enables users to efficiently visualize and interpret stratigraphic, lithologic, or hydrogeologic variations directly in **ArcGIS Pro**.
 
 ---
 
-## ⚙️ Features
+## ⚙️ Core Features
 
-| Step | Description | ArcGIS Function Used |
-|------|--------------|----------------------|
-| 1 | Converts borehole CSV data to XY point features | `arcpy.management.XYTableToPoint` |
-| 2 | Builds 3D feature classes from elevation fields | `arcpy.ddd.FeatureTo3DByAttribute` |
-| 3 | Interpolates volumetric surfaces via 3D Kriging | `arcpy.ga.EmpiricalBayesianKriging3D` |
+| Step | Description | ArcGIS Function |
+|------|--------------|-----------------|
+| 1️⃣ | Converts borehole CSV data into XY point features | `arcpy.management.XYTableToPoint` |
+| 2️⃣ | Creates 3D features from elevation fields | `arcpy.ddd.FeatureTo3DByAttribute` |
+| 3️⃣ | Interpolates volumetric surfaces via EBK 3D | `arcpy.ga.EmpiricalBayesianKriging3D` |
+
+**Key Benefits:**
+- Fully integrated with ArcGIS Pro 3D Analyst and Geostatistical Analyst  
+- Automated workflow—minimal scripting required  
+- Ideal for lithologic zoning, aquifer layer mapping, or contaminant plume visualization  
 
 ---
 
 ## 🧩 Requirements
 
-- **ArcGIS Pro 2.8+** (tested on 3.0 and newer)  
-- **3D Analyst** and **Geostatistical Analyst** extensions  
-- **Python 3.x** (installed with ArcGIS Pro)  
-- **Input CSV File** must include the following fields:
-  - `x_field` – X coordinate (Albers)
-  - `y_field` – Y coordinate (Albers)
-  - `elevation_field` – Top elevation
-  - `value_field` – Indicator or lithologic code
+| Component | Details |
+|------------|----------|
+| **ArcGIS Pro** | Version 2.8+ (tested on 3.0 and newer) |
+| **Extensions** | 3D Analyst & Geostatistical Analyst |
+| **Python** | 3.x (included with ArcGIS Pro) |
+| **Input Data** | CSV file with: `x_field`, `y_field`, `elevation_field`, and `value_field` |
 
 ---
 
 ## 📦 Installation
 
-### 🗺️ Load Toolbox in ArcGIS Pro
+### 🗺️ Add Toolbox to ArcGIS Pro
 
 1. Open **ArcGIS Pro**  
-2. Go to the **Catalog Pane** → Right-click **Toolboxes** → **Add Toolbox**  
-3. Browse to `GeoBorehole3D.pyt` and click **OK**  
-
-The toolbox will appear under your **Toolboxes** folder.
+2. In the **Catalog Pane**, right-click **Toolboxes → Add Toolbox**  
+3. Browse to and select `GeoBorehole3D.pyt`  
+4. The toolbox will now appear under **Toolboxes** in your project
 
 ---
 
-### ▶️ How to Use the Tool
+## ▶️ Usage Guide
 
-1. Open the tool:  
-   `ArcGIS Pro → Toolbox → GeoBorehole3D → CustomToolbox`
+1. Open the tool in ArcGIS Pro:  
+   **Toolboxes → GeoBorehole3D → Create 3D Borehole Model**
 
-2. Provide the following inputs:
-   - **Input CSV File:** e.g., `Boreholes.csv`  
-   - **x Albers:** X-coordinate field  
-   - **y Albers:** Y-coordinate field  
+2. Provide the following parameters:
+   - **Input CSV:** Borehole dataset (e.g., `Boreholes.csv`)  
+   - **X Field:** X-coordinate (Albers)  
+   - **Y Field:** Y-coordinate (Albers)  
    - **Elevation Field:** Top elevation of borehole interval  
-   - **Value Field:** Indicator/lithologic code  
-   - **Output Feature Class:** Path for generated 2D point feature class  
-   - **Output 3D Feature Class:** Path for generated 3D features  
-   - **Output Kriging Layer:** Name for generated EBK 3D layer  
+   - **Value Field:** Indicator or lithologic code  
+   - **Output Feature Class (2D):** Output shapefile or geodatabase path  
+   - **Output Feature Class (3D):** 3D point feature output  
+   - **Output EBK3D Layer:** Name for generated kriging volume  
 
-3. Run the tool — progress messages will display in the **Geoprocessing Pane**.
+3. Click **Run**. Progress messages will display in the **Geoprocessing Pane**.
 
-Once complete, your ArcGIS project will include:
+**Results:**
 - ✅ 2D feature class of borehole points  
-- ✅ 3D feature class symbolized by elevation  
-- ✅ EBK 3D layer representing interpolated subsurface properties  
+- ✅ 3D feature class colored by elevation or lithology  
+- ✅ EBK3D layer representing interpolated subsurface volume  
 
 ---
 
-## 📊 Example
+## 📊 Example Workflow
 
-**Input CSV**
+**Sample Input (`Boreholes.csv`):**
 
-| x | y | Top_elev_m | R |
-|---|---|-------------|---|
+| x | y | Top_elev_m | Lithology |
+|---|---|-------------|------------|
 | 412345 | 3489012 | 35.2 | Sand |
 | 412362 | 3489025 | 28.5 | Clay |
 | 412381 | 3489044 | 18.3 | Gravel |
 
-**Output Workflow**
-
-- XYTableToPoint → Borehole_Points
-- FeatureTo3DByAttribute → Borehole_3D
-- EmpiricalBayesianKriging3D → Borehole_EBK3D
-
-
+**Processing Steps:**
+1. `XYTableToPoint` → **Borehole_Points**  
+2. `FeatureTo3DByAttribute` → **Borehole_3D**  
+3. `EmpiricalBayesianKriging3D` → **Borehole_EBK3D**
 
 ---
 
-## 🧠 Notes
+## 🧠 Tips & Best Practices
 
-- Ensure all coordinates are in **Albers Equal Area Conic (EPSG:102039)** or adjust the spatial reference in the code.  
-- For large datasets, reduce the number of simulations or subset size in the Kriging tool for faster performance.  
-- Ideal applications:
-  - Lithologic zoning  
+- Use **Albers Equal Area Conic (EPSG:102039)** for consistent spatial reference.  
+- For large datasets, reduce the number of simulations or subset size in the Kriging tool for faster computation.  
+- Ideal applications include:
+  - 3D stratigraphic visualization  
   - Aquifer layer delineation  
-  - Subsurface property interpolation  
+  - Lithologic zone interpolation  
+  - Contaminant plume analysis  
 
 ---
 
-## 🧾 Citation
+## 📚 Citation
 
-If you use this tool in a publication or report, please cite as:
+If you use this toolbox in research or reports, please cite:
 
-> Attia, M. (2023). *GeoBorehole3D: A Python-based ArcGIS Toolbox for Borehole Visualization and 3D Kriging.*  
+> **Attia, M. (2023).** *GeoBorehole3D: A Python-based ArcGIS Toolbox for Borehole Visualization and 3D Kriging.*  
 > WSP USA / Louisiana State University.
 
 ---
@@ -127,26 +128,16 @@ If you use this tool in a publication or report, please cite as:
 
 **MIT License © 2023 Michael Attia**
 
-You are free to use, modify, and distribute this tool with attribution.
+This software is open source and freely available for use, modification, and distribution with proper attribution.
 
 ---
 
 ## 💬 Contact
 
-For questions, suggestions, or collaboration opportunities:
-
-📧 [Michael.Attia@wsp.com](mailto:Michael.Attia@wsp.com)  
-🌐 [LinkedIn](https://www.linkedin.com)([mailto:Michael.Attia@wsp.com](https://www.linkedin.com/in/michaelgattia/))   
+📧 **Email:** [Michael.Attia@wsp.com](mailto:Michael.Attia@wsp.com)  
+🔗 **LinkedIn:** [linkedin.com/in/michaelgattia](https://www.linkedin.com/in/michaelgattia/)  
 
 ---
 
 ## 📁 Repository Structure
-GeoBorehole3D/
-├── GeoBorehole3D.pyt
-├── example_data/
-│ └── Boreholes.csv
-├── README.md
-├── LICENSE
-└── .gitignore
-
 
