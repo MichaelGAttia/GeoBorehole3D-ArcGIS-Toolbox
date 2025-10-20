@@ -1,0 +1,236 @@
+import arcpy
+
+class Toolbox(object):
+    def __init__(self):
+        
+        """
+Define the toolbox (the name of the toolbox is the name of the .pyt file).
+
+This toolbox was created created on 10/30/2023 by Michael Attia mattia1@lsu.edu
+
+The tool is a way to visualize and create a geogical model using boreholes data
+
+The inputs are:
+
+            in_csv = the csv file
+            x_field = X albers
+            y_field = Y Albers
+            elevation_field = top elevation of each indicator
+            value_field = the Indicator
+            output_fc = XY Table to Point
+            output_3D = Feature To 3D By Attribute
+            output_Kriging = Empirical Bayesian Kriging 3D
+            
+        
+        """
+        
+        
+        self.label = "Toolbox"
+        self.alias = "toolbox"
+        self.tools = [MyToolbox]
+
+class MyToolbox(object):
+    def __init__(self):
+        self.label = "CustomToolbox"
+        self.alias = "Custom Toolbox"
+
+    def getParameterInfo(self):
+        # Define parameters for the tool
+        params = []
+
+        # Parameter 0: Input CSV file
+        param0 = arcpy.Parameter(
+            displayName="Input CSV File",
+            name="in_csv",
+            datatype="DEFile",
+            parameterType="Required",
+            direction="Input"
+        )
+        params.append(param0)
+
+        # Parameter 1: x_field
+        param1 = arcpy.Parameter(
+            displayName="x Albers",
+            name="x_field",
+            datatype="Field",
+            parameterType="Required",
+            direction="Input"
+        )
+        param1.parameterDependencies = ["in_csv"]
+        params.append(param1)
+
+        # Parameter 2: y_field
+        param2 = arcpy.Parameter(
+            displayName="y Albers",
+            name="y_field",
+            datatype="Field",
+            parameterType="Required",
+            direction="Input"
+        )
+        param2.parameterDependencies = ["in_csv"]
+        params.append(param2)
+
+        # Parameter 3: Elevation Field
+        param3 = arcpy.Parameter(
+            displayName="Elevation Field",
+            name="elevation_field",
+            datatype="Field",
+            parameterType="Required",
+            direction="Input"
+        )
+        param3.parameterDependencies = ["in_csv"]
+        params.append(param3)
+
+        # Parameter 4: Value Field
+        param4 = arcpy.Parameter(
+            displayName="Value Field",
+            name="value_field",
+            datatype="Field",
+            parameterType="Required",
+            direction="Input"
+        )
+        param4.parameterDependencies = ["in_csv"]
+        params.append(param4)
+
+        # Parameter 5: Output Feature Class
+        param5 = arcpy.Parameter(
+            displayName="Output Feature Class",
+            name="output_fc",
+            datatype="DEFeatureClass",
+            parameterType="Required",
+            direction="Output"
+        )
+        params.append(param5)
+
+        # Parameter 6: Output 3D Feature Class
+        param6 = arcpy.Parameter(
+            displayName="Output 3D Feature Class",
+            name="output_3D",
+            datatype="DEFeatureClass",
+            parameterType="Required",
+            direction="Output"
+        )
+        params.append(param6)
+
+        # Parameter 7: Output Kriging
+        param7 = arcpy.Parameter(
+            displayName="Output Kriging",
+            name="output_Kriging",
+            datatype="GPGALayer",
+            parameterType="Required",
+            direction="Output"
+        )
+        params.append(param7)
+
+        return params
+
+    def execute(self, parameters, messages):
+        # Get parameter values
+        in_csv = parameters[0].valueAsText
+        x_field = parameters[1].valueAsText
+        y_field = parameters[2].valueAsText
+        elevation_field = parameters[3].valueAsText
+        value_field = parameters[4].valueAsText
+        output_fc = parameters[5].valueAsText
+        output_3D = parameters[6].valueAsText
+        output_Kriging = parameters[7].valueAsText
+
+        # XY Table to Point
+        arcpy.management.XYTableToPoint(
+            in_table=in_csv,
+            out_feature_class=output_fc,
+            x_field=x_field,
+            y_field=y_field,
+            z_field=elevation_field,
+            coordinate_system=arcpy.SpatialReference(102039)
+        )
+
+        # Feature To 3D By Attribute
+        arcpy.ddd.FeatureTo3DByAttribute(
+            in_features=output_fc,
+            out_feature_class=output_3D,
+            height_field=elevation_field,
+            to_height_field=None
+        )
+
+        # Empirical Bayesian Kriging 3D
+        arcpy.ga.EmpiricalBayesianKriging3D(
+            in_features=output_3D,
+            elevation_field=elevation_field,
+            value_field=value_field,
+            out_ga_layer=output_Kriging,
+            elevation_units="METER",
+            measurement_error_field=None,
+            semivariogram_model_type="LINEAR",
+            transformation_type="NONE",
+            subset_size=20,
+            overlap_factor=1,
+            number_simulations=30,
+            trend_removal="NONE",
+            elev_inflation_factor=2,
+            search_neighborhood="NBRTYPE=Standard3D RADIUS=nan NBR_MAX=1 NBR_MIN=1 SECTOR_TYPE=ONE_SECTOR",
+            output_elevation=None,
+            output_type="PREDICTION",
+            quantile_value=0.5,
+            threshold_type="EXCEED",
+            probability_threshold=None
+        )
+
+
+        messages.addMessage("Tool execution complete")
+
+        return
+
+
+
+
+
+
+
+
+
+# import arcpy
+
+
+# #XYTableToPoint
+# arcpy.management.XYTableToPoint(
+#     in_table="Boreholes.csv",
+#     out_feature_class=r"C:\Users\mattia1\Documents\ArcGIS\Projects\GEOG 4057\GEOG 4057.gdb\Final_NE_LA_Drillers_XYTableToPoint",
+#     x_field="x",
+#     y_field="y",
+#     z_field=None,
+#     coordinate_system='PROJCS["USA_Contiguous_Albers_Equal_Area_Conic_USGS_version",GEOGCS["GCS_North_American_1983",DATUM["D_North_American_1983",SPHEROID["GRS_1980",6378137.0,298.257222101]],PRIMEM["Greenwich",0.0],UNIT["Degree",0.0174532925199433]],PROJECTION["Albers"],PARAMETER["False_Easting",0.0],PARAMETER["False_Northing",0.0],PARAMETER["Central_Meridian",-96.0],PARAMETER["Standard_Parallel_1",29.5],PARAMETER["Standard_Parallel_2",45.5],PARAMETER["Latitude_Of_Origin",23.0],UNIT["Meter",1.0]];-16901100 -6972200 10000;-100000 10000;-100000 10000;0.001;0.001;0.001;IsHighPrecision'
+# )
+
+# #Feature To 3D By Attribute
+# arcpy.ddd.FeatureTo3DByAttribute(
+#     in_features=r"C:\Users\mattia1\Documents\ArcGIS\Projects\GEOG 4057\GEOG 4057.gdb\Final_NE_LA_Drillers_XYTableToPoint",
+#     out_feature_class=r"C:\Users\mattia1\Documents\ArcGIS\Projects\GEOG 4057\GEOG 4057.gdb\Final_NE_LA_Dr_FeatureTo3DBy",
+#     height_field="Top_elev_m",
+#     to_height_field=None
+# )
+
+
+
+# #EmpiricalBayesianKriging3D
+# arcpy.ga.EmpiricalBayesianKriging3D(
+#     in_features="Final_NE_LA_Drillers_XYTableToPoint",
+#     elevation_field="Top_elev_m",
+#     value_field="R",
+#     out_ga_layer="EmpiricalBayesianKriging3D1",
+#     elevation_units="METER",
+#     measurement_error_field=None,
+#     semivariogram_model_type="LINEAR",
+#     transformation_type="NONE",
+#     subset_size=20,
+#     overlap_factor=1,
+#     number_simulations=30,
+#     trend_removal="NONE",
+#     elev_inflation_factor=2,
+#     search_neighborhood="NBRTYPE=Standard3D RADIUS=nan NBR_MAX=1 NBR_MIN=1 SECTOR_TYPE=ONE_SECTOR",
+#     output_elevation=None,
+#     output_type="PREDICTION",
+#     quantile_value=0.5,
+#     threshold_type="EXCEED",
+#     probability_threshold=None
+# )
