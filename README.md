@@ -140,4 +140,10 @@ This software is open source and freely available for use, modification, and dis
 ---
 
 ## 📁 Repository Structure
+- `3D_Boreholes_Model.pyt` is the ArcGIS toolbox to load in ArcGIS Pro.
+- `3D_Boreholes_Model.py` contains Python functions supporting the toolbox logic.
+- `Mike.csv` is a sample dataset for testing or demonstration.
+- `README.md` provides full usage instructions and repository information.
 
+
+---
