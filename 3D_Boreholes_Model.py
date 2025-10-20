@@ -6,7 +6,7 @@ class Toolbox(object):
         """
 Define the toolbox (the name of the toolbox is the name of the .pyt file).
 
-This toolbox was created created on 10/30/2023 by Michael Attia mattia1@lsu.edu
+This toolbox was created created on 10/30/2023 by Michael Attia michael.attia@wsp.com
 
 The tool is a way to visualize and create a geogical model using boreholes data
 
@@ -234,3 +234,4 @@ class MyToolbox(object):
 #     threshold_type="EXCEED",
 #     probability_threshold=None
 # )
+
